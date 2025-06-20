@@ -48,7 +48,7 @@ void ALMADefaultCharacter::BeginPlay()
 		CurrentCursor = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), CursorMaterial, CursorSize,
 			FVector(0));
 	}
-	
+	this->TargetHeight = SpringArmComponent->TargetArmLength;
 }
 
 // Called every frame
@@ -68,6 +68,10 @@ void ALMADefaultCharacter::Tick(float DeltaTime)
 		{
 			CurrentCursor->SetWorldLocation(ResultHit.Location);
 		}
+	}
+	if(this->FlagZoom)
+	{
+		this->SetMouseZoom(DeltaTime);
 	}
 }
 
@@ -93,17 +97,41 @@ void ALMADefaultCharacter::MoveRight(float Value)
 
 void ALMADefaultCharacter::SetMouseWheelUp()
 {
-	if(SpringArmComponent->TargetArmLength > ZoomMin)
+	if(SpringArmComponent->TargetArmLength > this->ZoomMin)
 	{
-		SpringArmComponent->TargetArmLength -= ZoomSpeed;
+		this->TargetHeight = FMath::Clamp(this->TargetHeight - this->ZoomStep, this->ZoomMin, this->ZoomMax);
+		this->FlagZoom = true;
 	}
 	
 }
 
 void ALMADefaultCharacter::SetMouseWheelDown()
 {
-	if (SpringArmComponent->TargetArmLength < ZoomMax)
+	if (SpringArmComponent->TargetArmLength < this->ZoomMax)
 	{
-		SpringArmComponent->TargetArmLength += ZoomSpeed;
+		this->TargetHeight = FMath::Clamp(this->TargetHeight + this->ZoomStep, this->ZoomMin, this->ZoomMax);
+		this->FlagZoom = true;
+	}
+}
+
+void ALMADefaultCharacter::SetMouseZoom(float DeltaTime)
+{
+	if (SpringArmComponent->TargetArmLength > this->TargetHeight)
+	{
+		SpringArmComponent->TargetArmLength -= this->ZoomSpeed * DeltaTime * 100;
+		if (SpringArmComponent->TargetArmLength <= this->TargetHeight)
+		{
+			SpringArmComponent->TargetArmLength = this->TargetHeight;
+			this->FlagZoom = false;
+		}
+	}
+	else if (SpringArmComponent->TargetArmLength < this->TargetHeight)
+	{
+		SpringArmComponent->TargetArmLength += this->ZoomSpeed * DeltaTime * 100;
+		if (SpringArmComponent->TargetArmLength >= this->TargetHeight)
+		{
+			SpringArmComponent->TargetArmLength = this->TargetHeight;
+			this->FlagZoom = false;
+		}
 	}
 }

@@ -52,9 +52,18 @@ private:
 	void MoveForward(float Value); // – будет отвечать за движение персонажа по оси X.
 	void MoveRight(float Value); // – будет отвечать за движение персонажа по оси Y.
 
-	float ZoomSpeed = 100.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Zoom", meta = (ClampMin = "1.0", ClampMax = "50.0", AllowPrivateAccess = true))
+	float ZoomSpeed = 1.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Zoom", meta = (ClampMin = "10.0", ClampMax = "1000.0", AllowPrivateAccess = true))
+	float ZoomStep = 100.0f;
+	//EditAnywhere, BlueprintReadWrite, Category = Camera
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Zoom", meta = (ClampMin = "200.0", ClampMax = "600.0", AllowPrivateAccess = true))
 	float ZoomMin = 500.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Zoom", meta = (ClampMin = "1800.0", ClampMax = "2200.0", AllowPrivateAccess = true))
 	float ZoomMax = 2000.0f;
+	bool FlagZoom{ false };
+	float TargetHeight;
 	void SetMouseWheelUp();
 	void SetMouseWheelDown();
+	void SetMouseZoom(float DeltaTime);
 };
