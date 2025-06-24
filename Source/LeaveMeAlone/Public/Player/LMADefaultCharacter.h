@@ -8,6 +8,9 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class ULMAHealthComponent;
+class UAnimMontage;
+
 
 UCLASS()
 class LEAVEMEALONE_API ALMADefaultCharacter : public ACharacter
@@ -28,6 +31,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* CameraComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components|Health")
+	ULMAHealthComponent* HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UAnimMontage* DeathMontage;
+
 
 	UPROPERTY()
 	UDecalComponent* CurrentCursor = nullptr;
@@ -44,6 +53,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION()
+	ULMAHealthComponent* GetHealthComponent() const { return HealthComponent; }
 
 private:
 	float YRotation = -75.0f; // Ц отвечает за поворот камеры по оси Y.
@@ -66,4 +78,7 @@ private:
 	void SetMouseWheelUp();
 	void SetMouseWheelDown();
 	void SetMouseZoom(float DeltaTime);
+	void OnDeath();
+	void RotationPlayerOnCursor();
+	void OnHealthChanged(float NewHealth);
 };
