@@ -9,6 +9,7 @@
 class UCameraComponent;
 class USpringArmComponent;
 class ULMAHealthComponent;
+class ULMAStaminaComponent;
 class UAnimMontage;
 
 
@@ -33,6 +34,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components|Health")
 	ULMAHealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components|Stamina")
+	ULMAStaminaComponent* StaminaComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DeathMontage;
@@ -81,4 +85,10 @@ private:
 	void OnDeath();
 	void RotationPlayerOnCursor();
 	void OnHealthChanged(float NewHealth);
+	//bool FlagSprint{ false };
+	void SetSprintTrue();
+	void SetSprintFalse();
+	void StaminaZero();
+
+	//float StaminaSprint = 0.0f;
 };

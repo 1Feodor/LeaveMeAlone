@@ -8,9 +8,12 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Components/LMAHealthComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/LMAHealthComponent.h"
+#include "Components/LMAStaminaComponent.h"
 #include "Engine/Engine.h"
+#include "Math/Vector.h"
+#include "Math/MathFwd.h"
 
 
 // Sets default values
@@ -41,6 +44,7 @@ ALMADefaultCharacter::ALMADefaultCharacter()
 	bUseControllerRotationRoll = false;
 
 	HealthComponent = CreateDefaultSubobject<ULMAHealthComponent>("HealthComponent");
+	StaminaComponent = CreateDefaultSubobject<ULMAStaminaComponent>("StaminaComponent");
 }
 
 // Called when the game starts or when spawned
@@ -58,6 +62,7 @@ void ALMADefaultCharacter::BeginPlay()
 	OnHealthChanged(HealthComponent->GetHealth());
 	HealthComponent->OnDeath.AddUObject(this, &ALMADefaultCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &ALMADefaultCharacter::OnHealthChanged);
+	StaminaComponent->OnStamina.AddUObject(this, &ALMADefaultCharacter::StaminaZero);
 }
 
 // Called every frame
@@ -85,11 +90,26 @@ void ALMADefaultCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAxis("MoveRight", this, &ALMADefaultCharacter::MoveRight);
 	PlayerInputComponent->BindAction("SetMouseWheelUp", IE_Pressed, this, &ALMADefaultCharacter::SetMouseWheelUp);
 	PlayerInputComponent->BindAction("SetMouseWheelDown", IE_Pressed, this, &ALMADefaultCharacter::SetMouseWheelDown);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ALMADefaultCharacter::SetSprintTrue);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ALMADefaultCharacter::SetSprintFalse);
 }
 
 void ALMADefaultCharacter::MoveForward(float Value)
 {
 	AddMovementInput(GetActorForwardVector(), Value);
+
+	if (GetCharacterMovement()->MaxWalkSpeed >= 600.0f)
+	{
+		if (Value == 0)
+		{
+			StaminaComponent->SprintFalse();
+		}
+		else
+		{
+			StaminaComponent->SprintTrue();
+		}
+
+	}
 }
 void ALMADefaultCharacter::MoveRight(float Value)
 {
@@ -172,4 +192,32 @@ void ALMADefaultCharacter::RotationPlayerOnCursor()
 void ALMADefaultCharacter::OnHealthChanged(float NewHealth)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Health = %f"), NewHealth));
+}
+
+void ALMADefaultCharacter::SetSprintTrue()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "True", true, FVector2D(2.0f, 2.0f));
+	
+	if (StaminaComponent->GetStaminaSprint() > 0)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		if (GetCharacterMovement()->Velocity.Length() > 50.0)
+		{
+			StaminaComponent->SprintTrue();
+		}
+	}
+}
+
+void ALMADefaultCharacter::SetSprintFalse()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "SprintFalse", true, FVector2D(2.0f, 2.0f));
+	
+	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+	StaminaComponent->SprintFalse();
+}
+
+void ALMADefaultCharacter::StaminaZero()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "True", true, FVector2D(2.0f, 2.0f));
 }
