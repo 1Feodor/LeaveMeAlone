@@ -52,7 +52,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	FAmmoWeapon AmmoWeapon{ 5, 0, true };
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sprint", meta = (ClampMin = "0.05", ClampMax = "1.0", AllowPrivateAccess = true))
 	float SpeedShoot = 0.5f;
 
 	void Shoot();
