@@ -90,6 +90,7 @@ void ULMAWeaponComponent::OnNotifyReloadFinished(USkeletalMeshComponent* Skeleta
 	if (Character->GetMesh() == SkeletalMesh)
 	{
 		AnimReloading = false;
+		Weapon->ChangeClip();
 	}
 }
 
@@ -103,7 +104,7 @@ void ULMAWeaponComponent::Reload()
 	if (StaminaFlag && Weapon->BulletsMax())
 	{
 		if (!CanReload()) return;
-		Weapon->ChangeClip();
+		//Weapon->ChangeClip();
 		AnimReloading = true;
 		ACharacter* Character = Cast<ACharacter>(GetOwner());
 		Character->PlayAnimMontage(ReloadMontage);
@@ -118,4 +119,15 @@ void ULMAWeaponComponent::StaminaIs(bool value)
 void ULMAWeaponComponent::ZeroBulletsReload()
 {
 	Reload();
+}
+
+bool ULMAWeaponComponent::GetCurrentWeaponAmmo(FAmmoWeapon& AmmoWeapon)
+const
+{
+	if (Weapon)
+	{
+		AmmoWeapon = Weapon->GetCurrentAmmoWeapon();
+		return true;
+	}
+	return false;
 }

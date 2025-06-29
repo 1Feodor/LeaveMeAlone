@@ -43,7 +43,7 @@ void ULMAStaminaComponent::OnTimeToSpawn()
 		else
 		{
 			this->StaminaSprint = FMath::Clamp(this->StaminaSprint + this->StaminaPlus, 0.0f, this->MaxStaminaSprint);
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Health = %f"), this->StaminaSprint));
+			//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Health = %f"), this->StaminaSprint));
 		}
 		
 	}
@@ -59,7 +59,7 @@ void ULMAStaminaComponent::OnTimeToDestroy()
 	if (this->StaminaSprint > 0.0f)
 	{
 		this->StaminaSprint = FMath::Clamp(this->StaminaSprint - this->StaminaMinus, 0.0f, this->MaxStaminaSprint);
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Health = %f"), this->StaminaSprint));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Health = %f"), this->StaminaSprint));
 	}
 	else 
 	{
