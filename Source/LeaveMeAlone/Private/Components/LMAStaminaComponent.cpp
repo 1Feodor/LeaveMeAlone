@@ -36,7 +36,7 @@ void ULMAStaminaComponent::OnTimeToSpawn()
 {
 	if (this->StaminaSprint < this->MaxStaminaSprint)
 	{
-		if (StaminaPlusPause < 30)
+		if (StaminaPlusPause < PausaStamina)
 		{
 			++StaminaPlusPause;
 		}
@@ -65,6 +65,7 @@ void ULMAStaminaComponent::OnTimeToDestroy()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(this->DestroyTimerStamina);
 		OnStamina.Broadcast();
+		IsStaminaTime.Broadcast(true);
 	}
 	
 }
@@ -78,6 +79,7 @@ void ULMAStaminaComponent::SprintTrue()
 	}
 	if (!GetWorld()->GetTimerManager().IsTimerActive(this->DestroyTimerStamina))
 	{
+		IsStaminaTime.Broadcast(false);
 		GetWorld()->GetTimerManager().SetTimer(this->DestroyTimerStamina, this, &ULMAStaminaComponent::OnTimeToDestroy, this->DestroyTimerRate, true);
 	}
 }
@@ -87,6 +89,7 @@ void ULMAStaminaComponent::SprintFalse()
 	if (GetWorld()->GetTimerManager().IsTimerActive(this->DestroyTimerStamina))
 	{
 		GetWorld()->GetTimerManager().ClearTimer(this->DestroyTimerStamina);
+		IsStaminaTime.Broadcast(true);
 	}
 	if (!GetWorld()->GetTimerManager().IsTimerActive(this->SpawnTimerStamina) && this->StaminaSprint < this->MaxStaminaSprint)
 	{

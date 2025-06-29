@@ -11,6 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/LMAHealthComponent.h"
 #include "Components/LMAStaminaComponent.h"
+#include "Components/LMAWeaponComponent.h"
 #include "Engine/Engine.h"
 #include "Math/Vector.h"
 #include "Math/MathFwd.h"
@@ -45,6 +46,8 @@ ALMADefaultCharacter::ALMADefaultCharacter()
 
 	HealthComponent = CreateDefaultSubobject<ULMAHealthComponent>("HealthComponent");
 	StaminaComponent = CreateDefaultSubobject<ULMAStaminaComponent>("StaminaComponent");
+
+	WeaponComponent = CreateDefaultSubobject<ULMAWeaponComponent>("WeaponComponent");
 }
 
 // Called when the game starts or when spawned
@@ -63,6 +66,7 @@ void ALMADefaultCharacter::BeginPlay()
 	HealthComponent->OnDeath.AddUObject(this, &ALMADefaultCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &ALMADefaultCharacter::OnHealthChanged);
 	StaminaComponent->OnStamina.AddUObject(this, &ALMADefaultCharacter::StaminaZero);
+	StaminaComponent->IsStaminaTime.AddUObject(WeaponComponent, &ULMAWeaponComponent::StaminaIs);
 }
 
 // Called every frame
@@ -92,6 +96,10 @@ void ALMADefaultCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAction("SetMouseWheelDown", IE_Pressed, this, &ALMADefaultCharacter::SetMouseWheelDown);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ALMADefaultCharacter::SetSprintTrue);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ALMADefaultCharacter::SetSprintFalse);
+
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &ULMAWeaponComponent::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &ULMAWeaponComponent::OffFire);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &ULMAWeaponComponent::Reload);
 }
 
 void ALMADefaultCharacter::MoveForward(float Value)
@@ -219,5 +227,4 @@ void ALMADefaultCharacter::SetSprintFalse()
 void ALMADefaultCharacter::StaminaZero()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "True", true, FVector2D(2.0f, 2.0f));
 }

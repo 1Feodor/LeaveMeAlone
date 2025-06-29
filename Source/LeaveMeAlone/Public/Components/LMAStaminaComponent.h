@@ -7,6 +7,7 @@
 #include "LMAStaminaComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnStamina)
+DECLARE_MULTICAST_DELEGATE_OneParam(FIsStaminaTime, bool);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LEAVEMEALONE_API ULMAStaminaComponent : public UActorComponent
@@ -18,28 +19,28 @@ public:
 	ULMAStaminaComponent();
 
 	FOnStamina OnStamina;
+	FIsStaminaTime IsStaminaTime;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sprint", meta = (ClampMin = "10.0", ClampMax = "500.0", AllowPrivateAccess = true))
 	float MaxStaminaSprint = 100.0f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sprint", meta = (ClampMin = "0.05", ClampMax = "1.0", AllowPrivateAccess = true))
 	float SpawnTimerRate = 0.1f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sprint", meta = (ClampMin = "0.05", ClampMax = "1.0", AllowPrivateAccess = true))
 	float DestroyTimerRate = 0.1f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sprint", meta = (ClampMin = "0.1", ClampMax = "10.0", AllowPrivateAccess = true))
 	float StaminaMinus = 5.0f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sprint", meta = (ClampMin = "0.1", ClampMax = "10.0", AllowPrivateAccess = true))
 	float StaminaPlus = 1.0f;
 
-	UPROPERTY(EditAnywhere)
-	int8 StaminaPlusPause = 0;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sprint", meta = (ClampMin = "0", ClampMax = "100", AllowPrivateAccess = true))
+	int32 PausaStamina = 30;
 
 	FTimerHandle SpawnTimerStamina;
 	FTimerHandle DestroyTimerStamina;
@@ -58,4 +59,5 @@ public:
 
 private:
 	float StaminaSprint = 0.0f;
+	int32 StaminaPlusPause = 0;
 };

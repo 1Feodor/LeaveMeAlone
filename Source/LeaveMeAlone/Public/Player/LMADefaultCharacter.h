@@ -11,7 +11,7 @@ class USpringArmComponent;
 class ULMAHealthComponent;
 class ULMAStaminaComponent;
 class UAnimMontage;
-
+class ULMAWeaponComponent;
 
 UCLASS()
 class LEAVEMEALONE_API ALMADefaultCharacter : public ACharacter
@@ -50,6 +50,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cursor")
 	FVector CursorSize = FVector(20.0f, 40.0f, 40.0f);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components|Weapon")
+	ULMAWeaponComponent* WeaponComponent;
 
 public:	
 	// Called every frame
