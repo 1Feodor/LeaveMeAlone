@@ -100,6 +100,8 @@ void ALMADefaultCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &ULMAWeaponComponent::Fire);
 	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &ULMAWeaponComponent::OffFire);
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &ULMAWeaponComponent::Reload);
+
+	//PlayerInputComponent->BindAction("Pause", IE_Pressed, WeaponComponent, &ULMAWeaponComponent::OffFire);
 }
 
 void ALMADefaultCharacter::MoveForward(float Value)

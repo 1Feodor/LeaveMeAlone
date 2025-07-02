@@ -33,6 +33,7 @@ public:
 	ALMABaseWeapon();
 
 	void Fire();
+	UFUNCTION(BlueprintCallable)
 	void OffFire();
 	void ChangeClip();
 	bool BulletsMax() const;
